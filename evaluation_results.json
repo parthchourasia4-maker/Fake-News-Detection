@@ -1,0 +1,159 @@
+{
+  "dataset": {
+    "name": "FakeNewsNet",
+    "total_samples": 23196,
+    "train_samples": 18556,
+    "test_samples": 4640,
+    "train_test_split": {
+      "train_fraction": 0.8,
+      "test_fraction": 0.2
+    },
+    "class_counts": {
+      "fake": 5755,
+      "real": 17441
+    }
+  },
+  "baseline": {
+    "strategy": "always predict Real",
+    "accuracy": 0.7518968787722021,
+    "fake_f1": 0.0,
+    "confusion_matrix": [
+      [
+        0,
+        1151
+      ],
+      [
+        0,
+        3489
+      ]
+    ]
+  },
+  "selection": {
+    "criterion": "highest cross-validation Fake-class F1 on training data only",
+    "selected_model": "Linear SVC"
+  },
+  "selected_model": {
+    "model_name": "Linear SVC",
+    "test": {
+      "accuracy": 0.8484913793103448,
+      "precision_macro": 0.8018845382533379,
+      "recall_macro": 0.7787405072763127,
+      "f1_macro": 0.7890531416105728,
+      "precision_weighted": 0.8439891728712985,
+      "recall_weighted": 0.8484913793103448,
+      "f1_weighted": 0.845474822382829,
+      "balanced_accuracy": 0.7787405072763127,
+      "roc_auc": 0.8645041546735315,
+      "class_metrics": {
+        "fake": {
+          "precision": 0.7183235867446394,
+          "recall": 0.6403127715030409,
+          "f1": 0.6770785484611851
+        },
+        "real": {
+          "precision": 0.8854454897620365,
+          "recall": 0.9171682430495844,
+          "f1": 0.9010277347599606
+        }
+      },
+      "confusion_matrix": [
+        [
+          737,
+          414
+        ],
+        [
+          289,
+          3200
+        ]
+      ],
+      "confusion_matrix_labels": [
+        "Fake",
+        "Real"
+      ]
+    },
+    "cross_validation": {
+      "model_name": "Linear SVC",
+      "accuracy_mean": 0.8350936085867737,
+      "accuracy_std": 0.006261413428917291,
+      "f1_macro_mean": 0.7643378218435302,
+      "f1_macro_std": 0.006284047069438771,
+      "f1_fake_mean": 0.6352210369703423,
+      "f1_fake_std": 0.008112475061037785,
+      "balanced_accuracy_mean": 0.7491032565945117,
+      "balanced_accuracy_std": 0.0038991501338742412
+    }
+  },
+  "models": [
+    {
+      "model_name": "Logistic Regression",
+      "accuracy": 0.8467672413793104,
+      "balanced_accuracy": 0.7310184745952215,
+      "roc_auc": 0.8734452501706369,
+      "precision_real": 0.8537952114111055,
+      "recall_real": 0.9607337345944397,
+      "f1_real": 0.9041132838840189,
+      "precision_fake": 0.8081232492997199,
+      "recall_fake": 0.5013032145960035,
+      "f1_fake": 0.6187667560321716
+    },
+    {
+      "model_name": "Multinomial Naive Bayes",
+      "accuracy": 0.8398706896551724,
+      "balanced_accuracy": 0.7133332536488639,
+      "roc_auc": 0.865142128456843,
+      "precision_real": 0.8446285140562249,
+      "recall_real": 0.9644597305818287,
+      "f1_real": 0.9005754047905794,
+      "precision_fake": 0.8109756097560976,
+      "recall_fake": 0.4622067767158992,
+      "f1_fake": 0.5888212506917543
+    },
+    {
+      "model_name": "Linear SVC",
+      "accuracy": 0.8484913793103448,
+      "balanced_accuracy": 0.7787405072763127,
+      "roc_auc": 0.8645041546735315,
+      "precision_real": 0.8854454897620365,
+      "recall_real": 0.9171682430495844,
+      "f1_real": 0.9010277347599606,
+      "precision_fake": 0.7183235867446394,
+      "recall_fake": 0.6403127715030409,
+      "f1_fake": 0.6770785484611851
+    }
+  ],
+  "cross_validation": [
+    {
+      "model_name": "Logistic Regression",
+      "accuracy_mean": 0.8346083753798121,
+      "accuracy_std": 0.006843660929599436,
+      "f1_macro_mean": 0.7347560852947794,
+      "f1_macro_std": 0.011019633429725369,
+      "f1_fake_mean": 0.5720142349460978,
+      "f1_fake_std": 0.01783899844432825,
+      "balanced_accuracy_mean": 0.7042488628485964,
+      "balanced_accuracy_std": 0.009256812165629425
+    },
+    {
+      "model_name": "Multinomial Naive Bayes",
+      "accuracy_mean": 0.8307286149518209,
+      "accuracy_std": 0.006095665888883393,
+      "f1_macro_mean": 0.7188637434257978,
+      "f1_macro_std": 0.009856371925035105,
+      "f1_fake_mean": 0.5415264416682902,
+      "f1_fake_std": 0.016048701330348965,
+      "balanced_accuracy_mean": 0.6874069362658758,
+      "balanced_accuracy_std": 0.007950947652495865
+    },
+    {
+      "model_name": "Linear SVC",
+      "accuracy_mean": 0.8350936085867737,
+      "accuracy_std": 0.006261413428917291,
+      "f1_macro_mean": 0.7643378218435302,
+      "f1_macro_std": 0.006284047069438771,
+      "f1_fake_mean": 0.6352210369703423,
+      "f1_fake_std": 0.008112475061037785,
+      "balanced_accuracy_mean": 0.7491032565945117,
+      "balanced_accuracy_std": 0.0038991501338742412
+    }
+  ]
+}
