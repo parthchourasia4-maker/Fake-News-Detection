@@ -1,179 +1,228 @@
 # Fake News Detector
 
-Fake News Detector is a Streamlit application that classifies **news headlines** as likely Real or Fake using learned textual patterns. It is a headline-pattern classifier, not a fact-checking system.
+A machine learning and NLP application that classifies news headlines as
+likely **Real** or **Fake** based on learned textual patterns.
 
-It does not determine objective truth, verify claims, understand article context, or replace professional fact-checking.
+> **Important:** This is a text-pattern classification system, not a fact-checking
+> engine. It does not verify claims, determine objective truth, understand full
+> article context, or replace professional fact-checking.
 
-## Demo
+## Live Demo
 
-Run the application locally:
+**Try the deployed application:**
 
-```bash
-streamlit run app.py
-```
+https://fake-news-detection-vm6opb3atdc8itn4qzbnli.streamlit.app/
 
-Live demo: **Not available yet**
+## Project Highlights
 
-## What It Includes
+- End-to-end NLP classification pipeline
+- TF-IDF feature extraction using unigrams and bigrams
+- Comparison of Logistic Regression, Multinomial Naive Bayes, and Linear SVC
+- Stratified cross-validation performed without test-set leakage
+- Class-imbalance-aware evaluation
+- Confusion matrix, ROC-AUC, balanced accuracy, and per-class metrics
+- Interactive Streamlit dashboard
+- Single-headline prediction
+- Batch CSV prediction with downloadable results
+- Model coefficient-based feature interpretation
 
-- Single-headline prediction with a decision-score-derived confidence signal.
-- Model Performance page with comparison charts, class metrics, baseline comparison, confusion matrix, and cross-validation.
-- Feature Importance page derived from the saved Linear SVC coefficients and TF-IDF vocabulary.
-- Batch CSV prediction with validation, row-level error handling, and downloadable results.
-- Project Information page covering the dataset, approach, limitations, and responsible use.
+## Why This Project?
+
+Fake-news classification is a useful example of a real-world NLP problem
+where accuracy alone can be misleading.
+
+The dataset is imbalanced toward Real headlines, so this project evaluates
+the model using multiple metrics instead of relying only on accuracy.
+
+The workflow emphasizes:
+- Correct train/test separation
+- Prevention of feature-extraction leakage
+- Stratified validation
+- Fake-class performance
+- Baseline comparison
+- Error interpretation
+- Responsible use of predictions
 
 ## Dataset
 
-The project uses the FakeNewsNet dataset of labeled news headlines:
+The project uses labeled news headlines from the **FakeNewsNet** dataset.
 
-| Split or class | Samples |
-| --- | ---: |
+| Split / Class | Samples |
+|---|---:|
 | Total | 23,196 |
 | Real | 17,441 (75.19%) |
 | Fake | 5,755 (24.81%) |
-| Training split | 18,556 (80%) |
-| Test split | 4,640 (20%) |
+| Training | 18,556 (80%) |
+| Test | 4,640 (20%) |
 
-The class ratio is approximately 3.03:1 Real to Fake. The model uses title text only.
+The dataset contains approximately **3.03 times more Real headlines than
+Fake headlines**.
+
+The model uses **headline/title text only**.
 
 ## NLP Pipeline
 
-1. Lowercase the headline.
-2. Remove URLs and non-letter characters.
-3. Normalize whitespace.
-4. Fit TF-IDF on training data only.
-5. Train and evaluate Logistic Regression, Multinomial Naive Bayes, and Linear SVC.
+The text-processing workflow is:
 
-### TF-IDF Configuration
+1. Convert headlines to lowercase.
+2. Remove URLs.
+3. Remove non-letter characters.
+4. Normalize whitespace.
+5. Split the data into training and test sets.
+6. Fit TF-IDF using training data only.
+7. Train multiple classification algorithms.
+8. Compare models using validation metrics.
+9. Select the final model.
+10. Evaluate once on the held-out test set.
 
-- N-grams: unigrams and bigrams `(1, 2)`
-- Maximum features: 15,000
-- Minimum document frequency: 2
-- Maximum document frequency: 95%
-- English stop words
+This separation prevents information from the test set from influencing
+feature extraction or model selection.
 
-### Model Selection
+## TF-IDF Configuration
 
-Linear SVC was selected because it achieved the highest Fake-class F1 on 5-fold stratified cross-validation performed on the training data only. The held-out test set was not used for model selection.
+| Parameter | Value |
+|---|---|
+| N-gram range | (1, 2) |
+| Maximum features | 15,000 |
+| Minimum document frequency | 2 |
+| Maximum document frequency | 95% |
+| Stop words | English |
+## Model Selection
 
-## Final Evaluation
+Three supervised learning approaches were evaluated:
 
-The final test evaluation is stored in `evaluation_results.json`.
+- Logistic Regression
+- Multinomial Naive Bayes
+- Linear SVC
 
-| Metric | Linear SVC result |
-| --- | ---: |
-| Accuracy | 84.85% |
-| Balanced accuracy | 77.87% |
-| ROC-AUC | 0.8645 |
-| Fake precision | 71.83% |
-| Fake recall | 64.03% |
-| Fake F1 | 67.71% |
-| Real precision | 88.54% |
-| Real recall | 91.72% |
-| Real F1 | 90.10% |
+**Linear SVC** was selected as the final model based on the Fake-class
+performance during stratified cross-validation on the training data.
 
-### Confusion Matrix
+The held-out test set was not used for model selection.
 
-Rows are actual labels and columns are predicted labels. Label order is Fake, Real.
+## Final Test Performance
 
-```text
-                 Predicted Fake    Predicted Real
-Actual Fake              737               414
-Actual Real              289             3,200
-```
+The final evaluation is stored in `evaluation_results.json`.
 
-For the Fake class, 737 headlines were correctly identified and 414 Fake headlines were classified as Real. These are Fake-class false negatives, corresponding to a 36.0% miss rate among Fake test headlines.
+| Metric | Linear SVC |
+|---|---:|
+| Accuracy | **84.85%** |
+| Balanced Accuracy | **77.87%** |
+| ROC-AUC | **0.8645** |
+| Fake Precision | **71.83%** |
+| Fake Recall | **64.03%** |
+| Fake F1 | **67.71%** |
+| Real Precision | **88.54%** |
+| Real Recall | **91.72%** |
+| Real F1 | **90.10%** |
 
-### Majority Baseline
+### Baseline Comparison
 
-The majority baseline always predicts Real:
+A majority-class classifier that always predicts Real achieves **75.19%**
+accuracy.
 
-- Baseline accuracy: 75.19%
-- Final model accuracy: 84.85%
-- Improvement: +9.66 percentage points
+The final Linear SVC reaches **84.85%**, an improvement of **9.66 percentage
+points** over that baseline.
 
-### Cross-Validation
+This comparison is important because accuracy alone could otherwise make an
+imbalanced classifier appear stronger than it really is.
 
-Five-fold `StratifiedKFold` cross-validation is performed on the training data only. TF-IDF is fitted inside each fold to prevent fold-level vocabulary or IDF leakage.
+## Confusion Matrix
 
-| Metric | Mean +/- standard deviation |
-| --- | ---: |
+Rows represent actual labels and columns represent predictions.
+
+| | Predicted Fake | Predicted Real |
+|---|---:|---:|
+| Actual Fake | 737 | 414 |
+| Actual Real | 289 | 3,200 |
+
+The Fake-class recall of 64.03% means the model misses a meaningful portion
+of Fake headlines. This limitation should be considered before using the
+system in any real-world workflow.
+## Cross-Validation
+
+Five-fold `StratifiedKFold` cross-validation is performed using the training
+data only. TF-IDF is fitted independently inside each fold to prevent
+fold-level vocabulary and IDF leakage.
+
+| Metric | Mean +/- Standard Deviation |
+|---|---:|
 | Accuracy | 83.51% +/- 0.63% |
 | Macro F1 | 76.43% +/- 0.63% |
 | Fake F1 | 63.52% +/- 0.81% |
-| Balanced accuracy | 74.91% +/- 0.39% |
+| Balanced Accuracy | 74.91% +/- 0.39% |
 
-The standard deviation indicates variation across folds. The values above are formatted for display; full-precision values are retained in `evaluation_results.json`.
+## Streamlit Application
+
+The deployed application provides:
+
+### Single Prediction
+Enter a news headline and receive a Real/Fake classification with a
+decision-score-derived confidence signal.
+
+### Model Performance
+Explore accuracy, class-level metrics, baseline comparison, confusion matrix,
+ROC-AUC, and cross-validation results through interactive visualizations.
+
+### Feature Importance
+Inspect influential TF-IDF terms using the learned Linear SVC coefficients.
+
+### Batch Prediction
+Upload a CSV containing headlines, validate the input, generate predictions,
+and download the results.
+
+### Project Information
+Review the dataset, methodology, limitations, and responsible-use guidance.
 
 ## Interpretability
 
-The Feature Importance page displays the largest Linear SVC coefficients using the saved model and fitted vectorizer:
+The feature-importance view shows terms with strong Linear SVC coefficients.
 
-- Positive coefficients are associated with the Real class.
-- Negative coefficients are associated with the Fake class.
-- Larger absolute coefficients indicate stronger model-level influence.
+These coefficients represent statistical associations learned from the
+training data. They do not establish causation and do not prove that a
+particular word makes a headline Fake or Real.
 
-These are statistical associations learned from this training dataset. They do not prove causality and do not prove that a word makes an article Fake or Real. The dataset contains strong celebrity and entertainment-related patterns, which may not generalize to other datasets or news domains.
+Dataset-specific patterns may also fail to generalize to other news domains.
 
 ## Responsible Use
 
-Appropriate uses include research, education, analysis, portfolio demonstration, and assisting human reviewers.
+This project is intended for education, research, experimentation, and
+portfolio demonstration.
 
-Do not use this system for autonomous content removal, unsupervised fact-checking, regulatory decisions, mission-critical decisions, or any workflow without human oversight.
+It should **not** be used for autonomous content removal, definitive
+fact-checking, regulatory decisions, or other high-impact decisions without
+human review.
 
-Reliable fact-checking requires multiple sources, contextual understanding, domain expertise, and human judgment.
+Reliable fact-checking requires contextual understanding, multiple sources,
+domain expertise, and human judgment.
 
-## Installation and Local Use
+## Tech Stack
 
-Python 3.11 is specified in `runtime.txt`.
+**Python | pandas | NumPy | scikit-learn | Matplotlib | Seaborn | Altair |
+Streamlit | Jupyter Notebook | Git/GitHub**
 
-```bash
-python -m venv .venv
-```
+## Deployment
 
-Windows PowerShell:
+The application is deployed using **Streamlit Community Cloud**.
 
-```powershell
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-streamlit run app.py
-```
+Python **3.12** is used for the deployment environment.
 
-The app loads `final_model.pkl`, `final_vectorizer.pkl`, and `evaluation_results.json` from the same directory as `app.py`.
-
-To rerun the evaluation pipeline, place `FakeNewsNet.csv` beside `execute_pipeline.py`, or set a path explicitly:
-
-```powershell
-$env:FAKE_NEWS_DATA_PATH = "C:\path\to\FakeNewsNet.csv"
-python execute_pipeline.py
-```
-
-## Streamlit Community Cloud
-
-1. Push the repository to GitHub.
-2. Include `app.py`, `requirements.txt`, `runtime.txt`, `evaluation_results.json`, `final_model.pkl`, and `final_vectorizer.pkl`.
-3. In Streamlit Community Cloud, choose **Create app**.
-4. Select the repository and branch, and set the main file to `app.py`.
-5. Deploy and verify the five navigation pages.
-
-The dataset is needed to rerun training, but not for normal inference from the saved artifacts. No live deployment URL is claimed here because one is not currently available.
+The deployed application loads the saved TF-IDF vectorizer, Linear SVC model,
+and evaluation artifacts directly from the repository.
 
 ## Project Structure
 
 ```text
-fakenews/
+Fake-News-Detection/
 |-- app.py
 |-- execute_pipeline.py
+|-- phase2_features.py
+|-- phase3_errors.py
 |-- final_model.pkl
 |-- final_vectorizer.pkl
 |-- evaluation_results.json
 |-- requirements.txt
 |-- runtime.txt
-|-- FakeNews_Production_Ready.ipynb
-|-- FakeNewsNet.csv
-`-- README.md
-```
-
-## License and Acknowledgment
-
-This project is for educational and portfolio purposes. The dataset is FakeNewsNet. The modeling stack uses pandas, NumPy, scikit-learn, Matplotlib, Seaborn, Altair, and Streamlit.
+|-- test_app.py
+|-- README.md
+`-- .gitignore
