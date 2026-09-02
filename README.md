@@ -1,6 +1,6 @@
-# Signal/Check
+# Fake News Detector
 
-Signal/Check is a Streamlit application that classifies **news headlines** as likely Real or Fake using learned textual patterns. It is a headline-pattern classifier, not a fact-checking system.
+Fake News Detector is a Streamlit application that classifies **news headlines** as likely Real or Fake using learned textual patterns. It is a headline-pattern classifier, not a fact-checking system.
 
 It does not determine objective truth, verify claims, understand article context, or replace professional fact-checking.
 

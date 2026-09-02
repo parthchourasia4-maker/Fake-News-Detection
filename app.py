@@ -216,7 +216,7 @@ st.sidebar.markdown(
 # PAGE 1: HOME & PREDICTION
 # ============================================================================
 if page == "🏠 Home & Prediction":
-    page_header("NLP CLASSIFIER", "Signal/Check", "A focused look at the language patterns a trained model associates with real and fake news headlines.")
+    page_header("NLP CLASSIFIER", "Fake News Detector", "A focused look at the language patterns a trained model associates with real and fake news headlines.")
     st.markdown('<div class="section-rule"></div>', unsafe_allow_html=True)
     col1, col2 = st.columns([1.65, 1], gap="large")
 
@@ -586,7 +586,7 @@ elif page == "📥 Batch Prediction":
 # PAGE 5: PROJECT INFORMATION
 # ============================================================================
 elif page == "ℹ️ Project Information":
-    page_header("PROJECT NOTES", "About Signal/Check", "A portfolio project that demonstrates an end-to-end text classification workflow, with its boundaries made explicit.")
+    page_header("PROJECT NOTES", "About Fake News Detector", "A portfolio project that demonstrates an end-to-end text classification workflow, with its boundaries made explicit.")
     
     st.subheader("Dataset")
     col1, col2, col3, col4 = st.columns(4)
