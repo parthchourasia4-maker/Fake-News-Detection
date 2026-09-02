@@ -186,7 +186,7 @@ if evaluation_error:
 selected_test = evaluation['selected_model']['test']
 selected_cv = evaluation['selected_model']['cross_validation']
 
-st.sidebar.markdown('<div class="brand-mark">Signal<span>/</span>Check</div>', unsafe_allow_html=True)
+st.sidebar.markdown('<div class="brand-mark">Fake News Detector</div>', unsafe_allow_html=True)
 st.sidebar.markdown('<div class="brand-caption">Headline pattern analysis</div>', unsafe_allow_html=True)
 st.sidebar.markdown("---")
 page = st.sidebar.radio(
